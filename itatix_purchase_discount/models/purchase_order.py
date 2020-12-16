@@ -42,8 +42,10 @@ class PurchaseOrderLine(models.Model):
 
     def _get_discounted_price_unit(self):
         self.ensure_one()
-        if self.discount:
+        if self.discount and self.price_list:
             return self.price_list * (1 - self.discount / 100)
+        if self.discount and self.price_unit:
+            return self.price_unit * (1 - self.discount / 100)
         return self.price_list
 
     def _get_stock_move_price_unit(self):
