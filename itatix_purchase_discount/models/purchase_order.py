@@ -16,16 +16,21 @@ class PurchaseOrder(models.Model):
 
 class PurchaseOrderLine(models.Model):
     _inherit = "purchase.order.line"
+
     @api.depends("discount")
     def _compute_amount(self):
         return super()._compute_amount()
 
     def _prepare_compute_all_values(self):
         vals = super()._prepare_compute_all_values()
-        vals.update({"price_unit": self._get_discounted_price_unit()})
+        vals.update(
+            {
+                "price_unit": self._get_discounted_price_unit() if self.discount else self.price_unit
+            })
         return vals
 
     discount = fields.Float(string="Discount (%)", digits="Discount")
+    price_list = fields.Float(digits="Price list")
 
     _sql_constraints = [
         (
@@ -38,8 +43,8 @@ class PurchaseOrderLine(models.Model):
     def _get_discounted_price_unit(self):
         self.ensure_one()
         if self.discount:
-            return self.price_unit * (1 - self.discount / 100)
-        return self.price_unit
+            return self.price_list * (1 - self.discount / 100)
+        return self.price_list
 
     def _get_stock_move_price_unit(self):
         price_unit = False
@@ -73,6 +78,8 @@ class PurchaseOrderLine(models.Model):
         if not seller:
             return
         self.discount = seller.discount
+        self.price_list = seller.price_list
+        self.price_unit = self._get_discounted_price_unit() if seller.price_list else self.price_unit
 
     def _prepare_account_move_line(self, move):
         vals = super(PurchaseOrderLine, self)._prepare_account_move_line(move)
