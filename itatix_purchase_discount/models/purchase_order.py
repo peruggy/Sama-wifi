@@ -25,8 +25,9 @@ class PurchaseOrderLine(models.Model):
         vals = super()._prepare_compute_all_values()
         vals.update(
             {
-                "price_unit": self._get_discounted_price_unit() if self.discount else self.price_unit
+                "price_unit": self._get_discounted_price_unit()
             })
+        self.price_unit = self._get_discounted_price_unit()
         return vals
 
     discount = fields.Float(string="Discount (%)", digits="Discount")
