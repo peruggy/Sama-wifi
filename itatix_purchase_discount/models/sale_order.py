@@ -2,6 +2,29 @@ from odoo import api, fields, models
 from odoo.tools.misc import get_lang
 
 
+class SaleOrder(models.Model):
+    _inherit = 'sale.order'
+
+    @api.depends('order_line.purchase_line_ids.order_id')
+    def _compute_purchase_order_count(self):
+        result = super(SaleOrder, self)._compute_purchase_order_count()
+        purchase_ids = self._get_purchase_orders()
+        if purchase_ids:
+            lst = []
+            if purchase_ids:
+                for line in self.order_line:
+                    dict_line = {
+                        'product_id': line.product_id.id,
+                        'price_unit': line.price_unit,
+                        'price_list': line.price_list,
+                        'discount': line.vendor_discount
+                    }
+                    lst.append(
+                        [dict_line]
+                    )
+        return result
+
+
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 

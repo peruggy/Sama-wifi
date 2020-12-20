@@ -4,6 +4,20 @@ from odoo import api, fields, models
 class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
 
+    partner_shipping_id = fields.Many2one(
+        'res.partner',
+        string='Delivery Address',
+        readonly=True,
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
+        help="Delivery address for current purchase.")
+
+    partner_invoice_id = fields.Many2one(
+        'res.partner',
+        string='Invoicing Address',
+        readonly=True,
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
+        help="Delivery address for current purchase.")
+
     def _add_supplier_to_product(self):
         self.ensure_one()
         po_line_map = {
@@ -16,6 +30,26 @@ class PurchaseOrder(models.Model):
 
 class PurchaseOrderLine(models.Model):
     _inherit = "purchase.order.line"
+
+    def _prepare_purchase_order_line(
+            self, product_id, product_qty, product_uom, company_id, values, po
+    ):
+        res = super()._prepare_purchase_order_line(
+            product_id, product_qty, product_uom, company_id, values, po
+        )
+        seller = product_id._select_seller()
+        res.update(self._prepare_purchase_order_line_from_seller(seller))
+        return res
+
+    @api.model
+    def _prepare_purchase_order_line_from_seller(self, seller):
+        if not seller:
+            return {}
+        dict_values = {
+            "discount": seller.discount,
+            "price_list": seller.price_list
+         }
+        return dict_values
 
     @api.depends("discount")
     def _compute_amount(self):

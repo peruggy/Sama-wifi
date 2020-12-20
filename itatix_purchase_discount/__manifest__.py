@@ -4,7 +4,7 @@
     "Odoo Community Association (OCA)",
     "version": "13.0.0.0.2",
     "category": "Purchase Management",
-    "depends": ["purchase_stock", "sale"],
+    "depends": ["purchase_stock", "sale", "crm", "sale_purchase", "sale_purchase_stock"],
     "data": [
         "views/purchase_discount_view.xml",
         "views/report_purchaseorder.xml",
