@@ -4,6 +4,9 @@ from odoo import api, fields, models
 class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
 
+    sale_id = fields.Many2one('sale.order',
+                              string='Sale Order',
+                              copy=False)
     partner_shipping_id = fields.Many2one(
         'res.partner',
         string='Delivery Address',
@@ -31,11 +34,24 @@ class PurchaseOrder(models.Model):
 class PurchaseOrderLine(models.Model):
     _inherit = "purchase.order.line"
 
-    def _prepare_purchase_order_line(
-            self, product_id, product_qty, product_uom, company_id, values, po
-    ):
-        res = super()._prepare_purchase_order_line(
+    @api.model
+    def _prepare_purchase_order_line_from_procurement(self, product_id, product_qty, product_uom, company_id, values, po):
+        result = super(PurchaseOrderLine, self)._prepare_purchase_order_line_from_procurement(
             product_id, product_qty, product_uom, company_id, values, po
+        )
+        if values.get('group_id', False) and po:
+            group_id = values.get('group_id')
+            if group_id.sale_id:
+                sale_id = group_id.sale_id
+                po.sale_id = sale_id.id or False
+                po.partner_shipping_id = sale_id.partner_shipping_id.id
+                po.partner_invoice_id = sale_id.partner_invoice_id.id
+        return result
+
+    @api.model
+    def _prepare_purchase_order_line(self, product_id, product_qty, product_uom, company_id, supplier, po):
+        res = super(PurchaseOrderLine, self)._prepare_purchase_order_line(
+            product_id, product_qty, product_uom, company_id, supplier, po
         )
         seller = product_id._select_seller()
         res.update(self._prepare_purchase_order_line_from_seller(seller))
