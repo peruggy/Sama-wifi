@@ -10,14 +10,6 @@ class PurchaseOrder(models.Model):
     partner_shipping_id = fields.Many2one(
         'res.partner',
         string='Delivery Address',
-        readonly=True,
-        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
-        help="Delivery address for current purchase.")
-
-    partner_invoice_id = fields.Many2one(
-        'res.partner',
-        string='Invoicing Address',
-        readonly=True,
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
         help="Delivery address for current purchase.")
 
@@ -48,7 +40,6 @@ class PurchaseOrderLine(models.Model):
                 sale_id = group_id.sale_id
                 po.sale_id = sale_id.id or False
                 po.partner_shipping_id = sale_id.partner_shipping_id.id or False
-                po.partner_invoice_id = sale_id.partner_invoice_id.id or False
                 po.dna = sale_id.dna or False
                 po.final_user_id = sale_id.final_user_id or False
 
