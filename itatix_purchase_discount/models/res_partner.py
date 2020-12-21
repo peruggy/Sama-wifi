@@ -8,3 +8,4 @@ class ResPartner(models.Model):
         string="Descuento por defecto de proveedor",
         digits="Discount",
     )
+    final_user_rank = fields.Boolean(copy=False)

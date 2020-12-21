@@ -5,6 +5,9 @@ from odoo.tools.misc import get_lang
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
+    dna = fields.Char(copy=False)
+    final_user_id = fields.Many2one('res.partner', copy=False)
+
     @api.depends('order_line.purchase_line_ids.order_id')
     def _compute_purchase_order_count(self):
         result = super(SaleOrder, self)._compute_purchase_order_count()

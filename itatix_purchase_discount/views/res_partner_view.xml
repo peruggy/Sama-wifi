@@ -21,6 +21,9 @@
                         /></p>
                 </div>
             </xpath>
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="final_user_rank"/>
+            </xpath>
         </field>
     </record>
 </odoo>

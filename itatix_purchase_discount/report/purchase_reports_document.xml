@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template id="purchase_report_quotation_inherit_document" inherit_id="purchase.report_purchasequotation_document">
+        <xpath expr="/t/t/t[2]/div" position="before">
+            <strong>VENDOR</strong>
+        </xpath>
+        <xpath expr="/t/t/div/div[1]" position="after">
+            <div class="row address">
+                <strong>BILL TO</strong>
+                <div class="col-5">
+                    <div t-field="o.partner_invoice_id" t-options-widget="'contact'"/>
+                </div>
+                <div class="col-5 offset-2"/>
+            </div>
+        </xpath>
+    </template>
+</odoo>

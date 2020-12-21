@@ -21,6 +21,9 @@ class PurchaseOrder(models.Model):
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
         help="Delivery address for current purchase.")
 
+    dna = fields.Char(copy=False)
+    final_user_id = fields.Many2one('res.partner', copy=False)
+
     def _add_supplier_to_product(self):
         self.ensure_one()
         po_line_map = {
@@ -44,8 +47,11 @@ class PurchaseOrderLine(models.Model):
             if group_id.sale_id:
                 sale_id = group_id.sale_id
                 po.sale_id = sale_id.id or False
-                po.partner_shipping_id = sale_id.partner_shipping_id.id
-                po.partner_invoice_id = sale_id.partner_invoice_id.id
+                po.partner_shipping_id = sale_id.partner_shipping_id.id or False
+                po.partner_invoice_id = sale_id.partner_invoice_id.id or False
+                po.dna = sale_id.dna or False
+                po.final_user_id = sale_id.final_user_id or False
+
         return result
 
     @api.model
