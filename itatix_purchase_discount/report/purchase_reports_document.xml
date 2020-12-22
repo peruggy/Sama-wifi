@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
+    <!-- Purchase quotation report -->
     <template id="purchase_report_quotation_inherit_document" inherit_id="purchase.report_purchasequotation_document">
         <xpath expr="/t/t[1]" position="attributes">
             <attribute name="t-call">itatix_purchase_discount.external_purchase_layout</attribute>
@@ -11,29 +12,17 @@
                     <div t-field="o.partner_shipping_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}" name="purchase_shipping_address"/>
                 </t>
             </t>
+            <p>Plazo de pago: <span t-field="o.payment_term_id"/></p>
+            <div class="address">
+                <div t-field="o.dna"/>
+                <div t-field="o.final_user_id"/>
+            </div>
         </xpath>
         <xpath expr="/t/t/t[2]/div" position="before">
             <strong>VENDOR</strong>
         </xpath>
     </template>
-    <!--<template id="purchase_address_layout">
-        <t t-name="itatix_purchase_discount.purchase_address_layout">
-            <t t-set="colclass" t-value="('col-md-5' if report_type == 'html' else 'col-5') + ' ml-auto'"/>
-            <t t-if="address">
-                <t t-if="o.partner_shipping_id">
-                    <t t-set="information_block">
-                        <strong>SHIP TO:</strong>
-                        <div t-field="o.partner_shipping_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}" name="purchase_shipping_address"/>
-                    </t>
-                </t>
-                <div class="address row">
-                    <div name="address" t-att-class="colclass">
-                        <t t-raw="address"/>
-                    </div>
-                </div>
-            </t>
-        </t>
-    </template>-->
+    <!-- EXTERNAL LAYOUT STANDARD PURCHASE -->
     <template id="external_layout_standard_purchase">
         <div t-attf-class="header o_company_#{company.id}_layout" t-att-style="report_header_style">
             <div class="row">
@@ -83,6 +72,7 @@
             </div>
         </div>
     </template>
+    <!-- GENERAL LAYOUT EXTERNAL -->
     <template id="external_purchase_layout">
         <t t-if="not o" t-set="o" t-value="doc"/>
 
@@ -99,4 +89,6 @@
         </t>
         <t t-call="itatix_purchase_discount.external_layout_standard_purchase"><t t-raw="0"/></t>
     </template>
+    <!-- final report quotation purchase report -->
+
 </odoo>
