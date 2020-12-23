@@ -14,4 +14,6 @@ class CrmLead(models.Model):
         if res.get('context', False):
             res['context']['default_dna'] = self.dna
             res['context']['default_final_user_id'] = self.final_user_id.id
+            if self.final_user_id:
+                self.final_user_id.write({'final_user_rank': True})
         return res
