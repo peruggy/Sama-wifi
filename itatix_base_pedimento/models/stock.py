@@ -1,6 +1,5 @@
 from odoo import fields, models, api
 from odoo.tools.translate import _
-from odoo.exceptions import UserError
 
 
 class StockProductionLot(models.Model):
@@ -12,40 +11,35 @@ class StockProductionLot(models.Model):
 class StockQuant(models.Model):
     _inherit = 'stock.quant'
 
-    import_document = fields.Char(related='lot_id.import_document', copy=False)
+    import_document = fields.Char(related='lot_id.import_document', store=True, copy=False)
 
 
 class StockMoveLine(models.Model):
     _inherit = 'stock.move.line'
 
-    import_document = fields.Char(copy=False)
+    import_document = fields.Char(related='lot_id.import_document', copy=False)
 
     def _assign_production_lot(self, lot):
         super()._assign_production_lot(lot)
-        if self.lot_id:
-            self.lot_id.import_document = self.import_document
+        self.lot_id.write({'import_document': self.picking_id.import_document})
 
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
-    is_import_document = fields.Boolean(copy=False)
     import_document = fields.Char(copy=False)
     stock_move_line_count = fields.Integer(copy=False, compute='_compute_stock_move_line_count')
 
-    @api.onchange('is_import_document')
-    def _onchange_import_document_in_serial(self):
-        state = ['draft', 'waiting', 'confirmed', 'assigned']
-        if self.state not in state:
-            raise UserError("Lo siento, no es posible actualizar los pedimentos debido a que el estado actual es : {}".format(self.state))
-        for record in self:
-            if not record.is_import_document:
-                record.import_document = False
-            if record.import_document and record.is_import_document:
-                for rec in record.move_line_ids_without_package.filtered(lambda ln: ln.tracking):
-                    rec.import_document = record.import_document
-            else:
-                continue
+    # def assign_import_document(self):
+    #     state = ['draft', 'waiting', 'confirmed', 'assigned']
+    #     # if self.state not in state:
+    #     #     raise UserError("Lo siento, no es posible actualizar los pedimentos debido a que el estado actual es : {}".format(self.state))
+    #     for record in self:
+    #         if record.import_document:
+    #             for rec in record.move_line_ids_without_package.filtered(lambda ln: ln.tracking):
+    #                 rec.import_document = record.import_document
+    #         else:
+    #             continue
 
     @api.depends('move_line_ids_without_package')
     def _compute_stock_move_line_count(self):

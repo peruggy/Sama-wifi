@@ -30,8 +30,7 @@
         <field name="inherit_id" ref="stock.view_picking_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='origin']" position="after">
-                <field name="is_import_document" widget="boolean_toggle" string="Es un pedimento" groups="stock.group_production_lot"/>
-                <field name="import_document" string="Pedimento" groups="stock.group_production_lot"/>
+                <field name="import_document" string="Pedimento" attrs="{'invisible': [('picking_type_code', '=', 'outgoing')]}" groups="stock.group_production_lot"/>
                 <field name="stock_move_line_count" invisible="1"/>
             </xpath>
             <xpath expr="//button[@name='action_view_stock_valuation_layers']" position="after">
@@ -97,13 +96,15 @@
                     <field name="state" invisible="1"/>
                     <field name="lot_id" groups="stock.group_production_lot" attrs="{'column_invisible': [('parent.show_lots_text', '=', True)], 'invisible': [('lots_visible', '=', False)]}" context="{'default_product_id': product_id, 'default_company_id': company_id, 'active_picking_id': picking_id}" optional="show"/>
                     <field name="lot_name" groups="stock.group_production_lot" attrs="{'column_invisible': [('parent.show_lots_text', '=', False)], 'invisible': [('lots_visible', '=', False)]}" context="{'default_product_id': product_id}"/>
-                    <field name="import_document" string="Pedimento" groups="stock.group_production_lot"/>
                     <field name="is_initial_demand_editable" invisible="1"/>
                     <field name="product_uom_qty" readonly="1" attrs="{'column_invisible': ['|',('parent.immediate_transfer', '=', True),('parent.picking_type_code','=','incoming')]}" optional="show"/>
                     <field name="is_locked" invisible="1"/>
                     <field name="qty_done" attrs="{'readonly': [('state', 'in', ('done', 'cancel')), ('is_locked', '=', True)]}" force_save="1"/>
                     <field name="product_uom_id" force_save="1" attrs="{'readonly': [('state', '!=', 'draft')]}" groups="uom.group_uom"/>
                 </tree>
+            </xpath>
+            <xpath expr="//field[@name='move_line_ids_without_package']/tree//field[@name='product_id']" position="after">
+                <field name="import_document" string="Pedimento" groups="stock.group_production_lot"/>
             </xpath>
         </field>
     </record>
@@ -118,10 +119,11 @@
 
         </field>
     </record>
-    <record id="view_stock_move_line_operation_tree_import_document_inherit" model="ir.ui.view">
-        <field name="name">stock.move.line_operation_tree_import_document_inherit</field>
+    <!-- Stock Move Lines -->
+    <record id="view_move_line_form_import_document" model="ir.ui.view">
+        <field name="name">stock.move.line_form_import_document</field>
         <field name="model">stock.move.line</field>
-        <field name="inherit_id" ref="stock.view_stock_move_line_operation_tree"/>
+        <field name="inherit_id" ref="stock.view_move_line_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='lot_name']" position="after">
                 <field name="import_document" string="Pedimento" groups="stock.group_production_lot"/>
@@ -164,4 +166,28 @@
             </tree>
         </field>
     </record>
+    <record id="view_stock_quant_tree_import_document" model="ir.ui.view">
+        <field name="name">stock.quant.tree.import_document</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.view_stock_quant_tree_editable"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='lot_id']" position="after">
+                <field name="import_document" string="Pedimento"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="quant_search_view_inherit_import_document" model="ir.ui.view">
+        <field name="name">stock.quant.search.import_document</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.quant_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='Lot_Serial_number']" position="after">
+                <separator/>
+                <filter string="Pedimento" name="import_document"
+                        context="{'group_by': 'import_document'}"
+                />
+            </xpath>
+        </field>
+    </record>
+
 </odoo>
