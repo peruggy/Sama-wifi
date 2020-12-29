@@ -30,7 +30,7 @@
         <field name="inherit_id" ref="stock.view_picking_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='origin']" position="after">
-                <field name="import_document" string="Pedimento" attrs="{'invisible': [('picking_type_code', '=', 'outgoing')]}" groups="stock.group_production_lot"/>
+                <field name="import_document" string="Pedimento"/>
                 <field name="stock_move_line_count" invisible="1"/>
             </xpath>
             <xpath expr="//button[@name='action_view_stock_valuation_layers']" position="after">
@@ -73,7 +73,7 @@
                                 </div>
                                 <field name="lot_id" groups="stock.group_production_lot" context="{'default_product_id': product_id, 'active_picking_id': picking_id, 'default_company_id': company_id}" attrs="{'invisible': [('lot_id', '=', False),('lot_name', '!=', False)]}"/>
                                 <field name="lot_name" groups="stock.group_production_lot" attrs="{'invisible': ['|',('lot_id', '!=', False),('lot_name', '=', False)]}"/>
-                                <field name="import_document" string="Pedimento" groups="stock.group_production_lot"/>
+                                <field name="import_document" string="Pedimento"/>
                                 <field name="package_id" string="Source Package" groups="product.group_stock_packaging"/>
                                 <field name="result_package_id" string="Destination Package" groups="stock.group_tracking_lot"/>
                                 <field name="owner_id" string="Owner" groups="stock.group_tracking_owner"/>
@@ -103,8 +103,8 @@
                     <field name="product_uom_id" force_save="1" attrs="{'readonly': [('state', '!=', 'draft')]}" groups="uom.group_uom"/>
                 </tree>
             </xpath>
-            <xpath expr="//field[@name='move_line_ids_without_package']/tree//field[@name='product_id']" position="after">
-                <field name="import_document" string="Pedimento" groups="stock.group_production_lot"/>
+            <xpath expr="//field[@name='move_line_ids_without_package']/tree//field[@name='lot_id']" position="after">
+                <field name="import_document" string="Pedimento"/>
             </xpath>
         </field>
     </record>
@@ -126,7 +126,7 @@
         <field name="inherit_id" ref="stock.view_move_line_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='lot_name']" position="after">
-                <field name="import_document" string="Pedimento" groups="stock.group_production_lot"/>
+                <field name="import_document" string="Pedimento"/>
             </xpath>
 
         </field>
@@ -153,7 +153,7 @@
                         }"
                 />
                 <field name="lot_name" widget="text"/>
-                <field name="import_document" string="Pedimento" groups="stock.group_production_lot"/>
+                <field name="import_document" string="Pedimento"/>
                 <field name="package_id" attrs="{'readonly': ['&amp;', ('package_level_id', '!=', False), ('parent.picking_type_entire_packs', '=', True)]}" invisible="not context.get('show_package')" groups="stock.group_tracking_lot"/>
                 <field name="result_package_id" attrs="{'readonly': ['&amp;', ('package_level_id', '!=', False), ('parent.picking_type_entire_packs', '=', True)]}" groups="stock.group_tracking_lot"/>
                 <field name="owner_id" attrs="{'readonly': ['&amp;', ('package_level_id', '!=', False), ('parent.picking_type_entire_packs', '=', True)]}" invisible="not context.get('show_owner')" groups="stock.group_tracking_owner"/>

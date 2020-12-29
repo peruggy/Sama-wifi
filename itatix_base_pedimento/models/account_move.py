@@ -1,6 +1,6 @@
 from collections import defaultdict
 from odoo.tools import float_is_zero
-from odoo import fields, models
+from odoo import models
 
 
 class AccountMove(models.Model):

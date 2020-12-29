@@ -12,13 +12,3 @@ class SaleOrderLine(models.Model):
                 return {'domain': {'lot_id': [('id', '=', [])]}}
             res = {'domain': {'lot_id': [('id', 'in', lot_id.ids)]}}
             return res
-    lot_id = fields.Many2one(
-        'stock.production.lot', 'Lot/Serial Number',
-        domain="[('product_id', '=', product_id), ('company_id', '=', company_id)]", check_company=True,
-        help="Lot/Serial Number of the product to unbuild.", copy=False)
-
-    # Esto solo funciona para un solo ID, salvo que el requerimiento sea que sean multi tags (ManyToMany)
-    # def _prepare_invoice_line(self, **optional_values):
-    #     res = super(SaleOrderLine, self)._prepare_invoice_line(**optional_values)
-    #     res['lot_id'] = self.lot_id.id or False
-    #     return res
