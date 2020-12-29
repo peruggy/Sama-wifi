@@ -131,7 +131,7 @@ class PurchaseOrderLine(models.Model):
         self.price_list = seller.price_list
         self.price_unit = self._get_discounted_price_unit() if seller.price_list else self.price_unit
 
-    def _prepare_account_move_line(self, move):
-        vals = super(PurchaseOrderLine, self)._prepare_account_move_line(move)
-        vals["discount"] = self.discount
-        return vals
+    def _prepare_account_move_line(self, move=False):
+        res = super(PurchaseOrderLine, self)._prepare_account_move_line(move)
+        res.update({'discount':self.discount})
+        return res
