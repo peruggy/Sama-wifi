@@ -35,7 +35,7 @@
             </td>
         </xpath>
         <xpath expr="//table/tbody/t/tr/t/td[@name='td_taxes']" position="replace"/>
-        <xpath expr="//table/tbody/t/tr/t/td[3]" position="replace"/>
+        <xpath expr="//table/tbody/t/tr/t/td[2]" position="replace"/>
         <xpath expr="//table/thead/tr/th[@name='th_taxes']" position="replace"/>
         <xpath expr="//table/thead/tr/th[@name='th_date_req']" position="replace"/>
         <xpath expr="/t/t/div/div[1]" position="after">
@@ -53,6 +53,19 @@
             </div>
         </xpath>
         <xpath expr="/t/t/div/div[2]" position="after">
+            <div class="row address">
+                <div class="col-5">
+                    <strong>Channel:</strong>
+                    <div t-field="o.channel" t-options-widget="'contact'"/>
+                </div>
+                <div class="col-5 offset-2"/>
+            </div>
+        </xpath>
+        <xpath expr="/t/t/div/div[3]/div[2]" position="inside">
+            <strong>Final user:</strong>
+            <div t-field="o.final_user_id" t-options-widget="'contact'"/>
+        </xpath>
+        <xpath expr="/t/t/div/div[3]" position="after">
             <div class="row">
                 <div class="col-3">
                     <span>
@@ -65,24 +78,6 @@
                 <div class="col-3"/>
                 <div class="col-3"/>
             </div>
-        </xpath>
-        <xpath expr="/t/t/div/div[2]/div[4]" position="inside">
-            <span>
-                <strong>Final User:</strong>
-                <br/>
-            </span>
-        </xpath>
-        <xpath expr="/t/t/div/div[2]/div[4]" position="inside">
-            <span t-field="o.final_user_id"/>
-        </xpath>
-        <xpath expr="/t/t/div/div[3]/div[4]" position="inside">
-            <span>
-                <strong>Channel:</strong>
-                <br/>
-            </span>
-        </xpath>
-        <xpath expr="/t/t/div/div[3]/div[4]" position="inside">
-            <span t-field="o.channel"/>
         </xpath>
     </template>
 </odoo>
