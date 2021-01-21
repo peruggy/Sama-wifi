@@ -30,6 +30,8 @@ class CrmStage(models.Model):
 class CrmTeam(models.Model):
     _inherit = 'crm.team'
 
+    invoiced_target = fields.Float(group_operator="avg")
+
     def _compute_quotations_to_invoice(self):
         res = super(CrmTeam, self)._compute_quotations_to_invoice()
         query = self.env['sale.order']._where_calc([
@@ -93,8 +95,8 @@ class CrmTeam(models.Model):
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
-    billing_goal = fields.Float(related='user_id.billing_goal', store=True)
-    invoiced_target = fields.Float(related='team_id.invoiced_target', store=True)
+    billing_goal = fields.Float(related='user_id.billing_goal', group_operator="avg", store=True)
+    invoiced_target = fields.Float(related='team_id.invoiced_target', group_operator="avg", store=True)
     stage_probability = fields.Float(related="stage_id.probability", readonly=True)
     probability = fields.Float(readonly=True)
     is_stage_probability = fields.Boolean(

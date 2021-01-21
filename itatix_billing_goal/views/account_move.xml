@@ -8,8 +8,8 @@
             <field name="inherit_id" ref="account.view_invoice_tree"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='company_id']" position="after">
-                    <field name="invoiced_target" invisible="context.get('default_move_type') not in ('out_invoice', 'out_refund','out_receipt')"/>
-                    <field name="billing_goal" invisible="context.get('default_move_type') not in ('out_invoice', 'out_refund','out_receipt')"/>
+                    <field name="invoiced_target" attrs="{'invisible': [('invoiced_target','>=', 0)]}" invisible="context.get('default_move_type') not in ('out_invoice', 'out_refund','out_receipt')"/>
+                    <field name="billing_goal" attrs="{'invisible': [('billing_goal','>=', 0)]}" invisible="context.get('default_move_type') not in ('out_invoice', 'out_refund','out_receipt')"/>
                 </xpath>
             </field>
         </record>

@@ -6,8 +6,8 @@
             <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='activity_date_deadline_my']" position="after">
-                    <field name="invoiced_target"/>
-                    <field name="billing_goal"/>
+                    <field name="invoiced_target" attrs="{'invisible': [('invoiced_target','>=', 0)]}"/>
+                    <field name="billing_goal" attrs="{'invisible': [('billing_goal','>=', 0)]}"/>
                 </xpath>
             </field>
         </record>
