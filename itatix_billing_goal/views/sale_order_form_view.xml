@@ -7,6 +7,7 @@
             <field name="inherit_id" ref="sale.view_order_tree"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="invoiced_target" attrs="{'invisible': [('invoiced_target','>=', 0)]}"/>
                     <field name="billing_goal" attrs="{'invisible': [('billing_goal','>=', 0)]}"/>
                 </xpath>
             </field>
@@ -17,6 +18,7 @@
             <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="invoiced_target" attrs="{'invisible': [('invoiced_target','>=', 0)]}"/>
                     <field name="billing_goal" attrs="{'invisible': [('billing_goal','>=', 0)]}"/>
                 </xpath>
             </field>
