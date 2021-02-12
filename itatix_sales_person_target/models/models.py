@@ -62,7 +62,7 @@ class SalesTarget(models.Model):
     team_leader = fields.Many2one(related='sales_team_id.user_id', store=True)
     salesperson = fields.Many2one("res.users", string="Salesperson")
     target = fields.Float("Target")
-    monthly_target = fields.Float("Monthly Target", compute="_get_monthly_target")
+    monthly_target = fields.Float("Monthly Target")  # Quota/Meta de facturacion
     achieve = fields.Float("Achieve", compute="_get_perct_achievement", store=True)
     currency_id = fields.Many2one("res.currency", string="Currency")
     start_date = fields.Date("From")
@@ -121,24 +121,24 @@ class SalesTarget(models.Model):
         if self.sales_team_id:
             self.team_leader = self.sales_team_id.user_id
 
-    @api.depends('target')
-    def _get_monthly_target(self):
-        """
-        Pone la meta de facturación según la fecha condicionada de START_DATE Y END_DATE
-        SI no tiene una meta de facturacion establecida pone automaticamente la de meta de facturacion
-        global de las metas de venta
-        :return:
-        """
-        for record in self:
-            if record.target:
-                if not record.sales_team_id.invoiced_target:
-                    raise UserError("Se requiere tener una meta de facturacion en el equipo de ventas")
-                record.monthly_target = record.sales_team_id.invoiced_target
-                for line in record.sales_target_lines:
-                    if line.date_order == record.end_date:
-                        line.monthly_target = record.monthly_target
-            else:
-                record.monthly_target = 0.0
+    # @api.depends('target')
+    # def _get_monthly_target(self):
+    #     """
+    #     Pone la meta de facturación según la fecha condicionada de START_DATE Y END_DATE
+    #     SI no tiene una meta de facturacion establecida pone automaticamente la de meta de facturacion
+    #     global de las metas de venta
+    #     :return:
+    #     """
+    #     for record in self:
+    #         if record.target:
+    #             if not record.sales_team_id.invoiced_target:
+    #                 raise UserError("Se requiere tener una meta de facturacion en el equipo de ventas")
+    #             record.monthly_target = record.sales_team_id.invoiced_target
+    #             for line in record.sales_target_lines:
+    #                 if line.date_order == record.end_date:
+    #                     line.monthly_target = record.monthly_target
+    #         else:
+    #             record.monthly_target = 0.0
             
     @api.onchange('team_leader')
     def onchange_team_leader(self):
@@ -171,7 +171,7 @@ class SalesTarget(models.Model):
                 st._get_total_sales()
         return res
     
-    @api.depends('salesperson','target','currency_id','start_date','end_date','target_achieve')
+    @api.depends('salesperson', 'target', 'currency_id', 'start_date', 'end_date', 'target_achieve')
     def _get_perct_achievement(self):
         for rec in self:
             stdt = Datetime.to_string(rec.start_date)
@@ -381,14 +381,15 @@ class SalesTargetLines(models.Model):
     _rec_name = 'user_id'
     _order = 'id desc'        
     
-    target_id = fields.Many2one("sales.target",string="Sales Target")
-    date_order = fields.Date("Order Date")
-    user_id = fields.Many2one("res.users",string="Salesperson")
-    monthly_target = fields.Float("Monthly Target")
-    currency_id = fields.Many2one("res.currency",string="Currency")
-    monthly_target_achieve = fields.Float("Monthly Target Achieved")
-    no_of_sales = fields.Integer("Sales",compute="_get_total_sales",store=True)
-    monthly_target_achieve_per = fields.Float("Monthly Target Achieved Percentage")
+    target_id = fields.Many2one("sales.target",string="Sales Target", copy=False)
+    date_order = fields.Date("Order Date", copy=False)
+    user_id = fields.Many2one("res.users",string="Salesperson", copy=False)
+    monthly_target = fields.Float("Monthly Target", copy=False)
+    currency_id = fields.Many2one("res.currency",string="Currency", copy=False)
+    monthly_target_achieve = fields.Float("Monthly Target Achieved", copy=False)
+    no_of_sales = fields.Integer("Sales",compute="_get_total_sales",store=True, copy=False)
+    monthly_target_achieve_per = fields.Float("Monthly Target Achieved Percentage", copy=False)
+    gap = fields.Float(copy=False)
 
     @api.depends('user_id', 'date_order')
     def _get_total_sales(self):

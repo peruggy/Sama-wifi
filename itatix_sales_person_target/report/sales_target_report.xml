@@ -11,6 +11,7 @@
 				<field name="user_id" type="row" />
 				<field name="target" type="measure" />
 				<field name="achieve_total" type="measure" />
+				<field name="gap" type="measure"/>
 				<field name="sales" type="measure" />
 				<field name="achieve_perct" type="measure" />
 			</pivot>
