@@ -47,6 +47,24 @@ class CrmTeam(models.Model):
             'target': 'current',
         }
 
+    def view_sales_target_report(self):
+        return {
+            'name': _('Sales Target View'),
+            'type': 'ir.actions.act_window',
+            'domain': [('sales_team_id', '=', self.id)],
+            'context': {'group_by': 'sales_team_id'},
+            'view_type': 'pivot',
+            'view_mode': 'pivot',
+            'res_model': 'sales.target.report',
+            'res_id': self[0].id,
+            'view_id': self.env.ref('itatix_sales_person_target.view_sales_target_report_pivot').id,
+            'views': [
+                (self.env.ref('itatix_sales_person_target.view_sales_target_report_pivot').id or False, 'pivot'),
+            ],
+            'target': 'current',
+        }
+
+
     @api.onchange('member_ids')
     def onchange_member_ids(self):
         UserObj = self.env['res.users'].sudo().search([('id','=',self.user_id.id)])
