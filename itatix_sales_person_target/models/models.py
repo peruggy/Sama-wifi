@@ -90,18 +90,20 @@ class SalesTarget(models.Model):
                 and ln.date_order.year == record.current_year.year
             )
             if current_month:
+                last_days = monthrange(fields.Datetime.today().year, fields.Datetime.today().month)[1]
+                stdt = fields.Datetime.today().replace(day=1)
+                endt = fields.Datetime.today().replace(day=last_days)
+                monthly_target_achieve, monthly_target_achieve_per = record.get_perct_achievement(
+                    record.salesperson.id, record.monthly_target, record.currency_id.id, stdt, endt,record.target_achieve)
+                current_month.monthly_target_achieve = monthly_target_achieve
+                current_month.monthly_target_achieve_per = monthly_target_achieve_per
                 record.write({
                     'monthly_target': current_month.monthly_target,
                     'target': current_month.monthly_target,
-                    'achieve': current_month.monthly_target_achieve,
-                    'perct_achievement': current_month.monthly_target_achieve * 100 / (current_month.monthly_target or 1.0),
+                    'achieve': monthly_target_achieve,
+                    'perct_achievement': monthly_target_achieve_per,
                     'gap': current_month.monthly_target_achieve - current_month.monthly_target
                 })
-            # self.monthly_target = current_month.monthly_target
-            # self.target = current_month.monthly_target
-            # self.achieve = current_month.monthly_target_achieve
-            # self.perct_achievement = current_month.monthly_target_achieve * 100 / (current_month.monthly_target or 1.0)
-            # self.gap = current_month.monthly_target_achieve - current_month.monthly_target
 
     @api.model
     def create(self, vals):
@@ -128,7 +130,7 @@ class SalesTarget(models.Model):
             diff_year = self.mapped("sales_target_lines").filtered(
                 lambda ln: ln.date_order.year == selected_dt.year
             )
-            if not diff_year:
+            if diff_year:
                 self.create_months(selected_dt)
             for line in self.mapped("sales_target_lines"):
                 if line.date_order.year == current_year.year:
