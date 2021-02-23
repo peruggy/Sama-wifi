@@ -129,14 +129,15 @@ class SalesTarget(models.Model):
 
     @api.depends('sales_team_id', 'sales_target_lines.monthly_target')
     def _compute_quota_sales_team(self):
-        if self.sales_team_id:
-            target_ids = self.env['sales.target'].search([('sales_team_id', '=', self.sales_team_id.id)])
-            quota = 0.0
-            if target_ids:
-                for st in target_ids:
-                    quota += st.target
-            self.sales_team_id.invoiced_target = quota
-            self.total_target = quota
+        for record in self:
+            if record.sales_team_id:
+                target_ids = record.env['sales.target'].search([('sales_team_id', '=', record.sales_team_id.id)])
+                quota = 0.0
+                if target_ids:
+                    for st in target_ids:
+                        quota += st.target
+                record.sales_team_id.invoiced_target = quota
+                record.total_target = quota
 
     @api.depends('sales_target_lines.monthly_target')
     def _compute_monthly_target(self):
