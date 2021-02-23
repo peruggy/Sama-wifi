@@ -19,7 +19,7 @@ class SalesTargetReport(models.Model):
     gap = fields.Float(readonly=True)
     achieve_total = fields.Float('Achieve', readonly=True)
     sales = fields.Integer("Sales", readonly=True)
-    achieve_perct = fields.Float('Achievement %', readonly=True)
+    achieve_perct = fields.Float('Achievement %',  group_operator="avg", readonly=True)
 
     # @api.model
     # def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
