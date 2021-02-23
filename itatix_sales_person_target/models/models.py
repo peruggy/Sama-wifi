@@ -125,7 +125,7 @@ class SalesTarget(models.Model):
     sales_target_lines = fields.One2many("sales.target.lines", "target_id", string="Target Lines")
     current_year = fields.Date(copy=False)
     gap = fields.Float(copy=False, compute='_compute_monthly_target', store=True)
-    total_target = fields.Float(copy=False, compute='_compute_quota_sales_team', store=True)
+    total_target = fields.Float(copy=False, string="Teams Quota", compute='_compute_quota_sales_team', store=True)
 
     @api.depends('sales_team_id', 'sales_target_lines.monthly_target')
     def _compute_quota_sales_team(self):
