@@ -133,22 +133,6 @@
 		</field>
 	</record>
 
-	<!-- Sales Target Action -->
-	<record id="sales_target_action" model="ir.actions.act_window">
-		<field name="name">Sales Target</field>
-		<field name="res_model">sales.target</field>
-		<field name="view_mode">tree,form</field>
-	</record>
-
-	<!-- Sales Target Menuitem -->
-	<menuitem id="menu_sales_target" parent="sale.sale_order_menu"
-		sequence="10" action="sales_target_action" groups="itatix_sales_person_target.group_team_leader"/>
-
-	<menuitem id="sale.sale_order_menu" name="Configuration"
-		parent="sale.sale_menu_root" sequence="6"/>
-
-	<menuitem id="sale.menu_sale_report" name="Reporting"
-		parent="sale.sale_menu_root" sequence="5"/>
 
 	<record id="sale_view_order_product_search_inherit" model="ir.ui.view">
 		<field name="name">sale.report.search.inherit</field>
@@ -265,4 +249,23 @@
 		<field name="help">From this report, you can have an overview of the amount invoiced to your customer. The search tool can also be used to personalise your Invoices reports and so, match this analysis to your needs.</field>
 	</record>
 
+	<!-- Sales Target Action -->
+	<record id="sales_target_action" model="ir.actions.act_window">
+		<field name="name">Sales Target</field>
+		<field name="res_model">sales.target</field>
+		<field name="view_mode">tree,form,kanban</field>
+		<field name="view_id" ref="itatix_sales_person_target.sales_target_tree_view"/>
+		<field name="domain">[]</field>
+		<field name="context">{'group_by': 'sales_team_id'}</field>
+	</record>
+
+	<!-- Sales Target Menuitem -->
+	<menuitem id="menu_sales_target" parent="sale.sale_order_menu"
+			  sequence="10" action="sales_target_action"/>
+
+	<menuitem id="sale.sale_order_menu" name="Configuration"
+			  parent="sale.sale_menu_root" sequence="6"/>
+
+	<menuitem id="sale.menu_sale_report" name="Reporting"
+			  parent="sale.sale_menu_root" sequence="5"/>
 </odoo>
