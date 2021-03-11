@@ -504,7 +504,6 @@ class SalesTargetLines(models.Model):
                 BillingOrders = self.env['account.move'].search([
                     ('user_id', '=', rec.user_id.id),
                     ('create_date', '>=', stdt),
-                    ('currency_id', '=', rec.target_id.currency_id.id),
                     ('create_date', '<=', endt),
                     ('state', '=', 'posted'),
                     ('move_type', '=', 'out_invoice')
