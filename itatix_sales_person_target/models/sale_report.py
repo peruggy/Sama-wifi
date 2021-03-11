@@ -47,7 +47,6 @@ class SaleReport(models.Model):
         ], string='Status', readonly=True)
     weight = fields.Float('Gross Weight', readonly=True)
     volume = fields.Float('Volume', readonly=True)
-    exchange_currency_rate = fields.Float("PV en USD", readonly=True)
     discount = fields.Float('Discount %', readonly=True)
     discount_amount = fields.Float('Discount Amount', readonly=True)
     campaign_id = fields.Many2one('utm.campaign', 'Campaign')
